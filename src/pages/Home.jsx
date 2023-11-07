@@ -1,6 +1,9 @@
-import { useEffect, useReducer } from "react";
+import { createContext, useContext, useEffect, useReducer } from "react";
 
 const KEY = "4fefc778";
+
+// 1. Create
+const MovieContext = createContext();
 
 const initialState = {
   query: "",
@@ -46,14 +49,20 @@ function Home() {
 
   return (
     <div className="p-10">
-      <h1>Home</h1>
-      <Search query={query} dispatch={dispatch} />
-      <MovieList movieList={movieList} dispatch={dispatch} />
+      {/* 2. Provide */}
+      <MovieContext.Provider value={{ query, movieList, dispatch }}>
+        <h1>Home</h1>
+        <Search />
+        <MovieList />
+      </MovieContext.Provider>
     </div>
   );
 }
 
-function Search({ query, dispatch }) {
+function Search() {
+  // 3. Consume
+  const { query, dispatch } = useContext(MovieContext);
+
   return (
     <input
       type="text"
@@ -64,7 +73,10 @@ function Search({ query, dispatch }) {
   );
 }
 
-function MovieList({ query, movieList }) {
+function MovieList() {
+  // 3. Consume
+  const { movieList } = useContext(MovieContext);
+
   return (
     <ul className="grid grid-cols-5">
       {movieList.map((movie) => {
